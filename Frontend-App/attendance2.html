@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attendance Records</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f7f9fc;
+    }
+    h2 {
+      text-align: center;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      text-decoration: none;
+      color: #007bff;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: center;
+      vertical-align: middle;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    .editable {
+      cursor: pointer;
+      background-color: #fffacd;
+    }
+    .editable:focus {
+      outline: 2px solid #007bff;
+    }
+    .chart-cell canvas {
+      width: 60px !important;
+      height: 60px !important;
+    }
+    .form-container {
+      margin-top: 30px;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border-radius: 8px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .form-container input {
+      padding: 8px;
+      margin: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: calc(100% / 5 - 12px);
+    }
+    .form-container button {
+      padding: 10px 15px;
+      margin-top: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .form-container button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="dashboard.html" class="back-link">&larr; Back to Dashboard</a>
+
+  <h2>Attendance Records</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Class</th>
+        <th>Total Days</th>
+        <th>Present</th>
+        <th>Absent</th>
+        <th>%</th>
+        <th>Pie</th>
+      </tr>
+    </thead>
+    <tbody id="attendanceTableBody">
+      <!-- Rows injected via JavaScript -->
+    </tbody>
+  </table>
+
+  <div class="form-container">
+    <h3>Add New Student</h3>
+    <input type="text" id="newName" placeholder="Name" />
+    <input type="text" id="newClass" placeholder="Class" />
+    <input type="number" id="newTotal" placeholder="Total Days" />
+    <input type="number" id="newPresent" placeholder="Days Present" />
+    <button onclick="addStudent()">Add</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const tableBody = document.getElementById('attendanceTableBody');
+    let studentId = 1;
+
+    const students = [
+      { name: "Aarav Singh", class: "10A", total: 180, present: 170 },
+      { name: "Neha Sharma", class: "10A", total: 180, present: 160 },
+      { name: "Rohan Patel", class: "10A", total: 180, present: 175 }
+    ];
+
+    function createPieChart(canvas, present, absent) {
+      return new Chart(canvas.getContext('2d'), {
+        type: 'pie',
+        data: {
+          labels: ['Present', 'Absent'],
+          datasets: [{
+            data: [present, absent],
+            backgroundColor: ['#4CAF50', '#FF6F61']
+          }]
+        },
+        options: {
+          responsive: false,
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }
+
+    function addRow(student) {
+      const row = document.createElement('tr');
+      const absent = student.total - student.present;
+      const percent = ((student.present / student.total) * 100).toFixed(1);
+
+      row.innerHTML = `
+        <td>${studentId}</td>
+        <td class="editable" contenteditable="true">${student.name}</td>
+        <td class="editable" contenteditable="true">${student.class}</td>
+        <td class="editable number" contenteditable="true">${student.total}</td>
+        <td class="editable number" contenteditable="true">${student.present}</td>
+        <td class="absent">${absent}</td>
+        <td class="percent">${percent}%</td>
+        <td class="chart-cell"><canvas id="pie-${studentId}"></canvas></td>
+      `;
+
+      tableBody.appendChild(row);
+      const canvas = document.getElementById(`pie-${studentId}`);
+      createPieChart(canvas, student.present, absent);
+      studentId++;
+    }
+
+    function addStudent() {
+      const name = document.getElementById('newName').value;
+      const cls = document.getElementById('newClass').value;
+      const total = parseInt(document.getElementById('newTotal').value);
+      const present = parseInt(document.getElementById('newPresent').value);
+
+      if (name && cls && !isNaN(total) && !isNaN(present)) {
+        const student = { name, class: cls, total, present };
+        addRow(student);
+        document.getElementById('newName').value = '';
+        document.getElementById('newClass').value = '';
+        document.getElementById('newTotal').value = '';
+        document.getElementById('newPresent').value = '';
+      }
+    }
+
+    // Handle editable updates
+    tableBody.addEventListener('input', (event) => {
+      const row = event.target.closest('tr');
+      const total = parseInt(row.children[3].textContent);
+      const present = parseInt(row.children[4].textContent);
+      const absentCell = row.children[5];
+      const percentCell = row.children[6];
+      const canvas = row.querySelector('canvas');
+
+      if (!isNaN(total) && !isNaN(present)) {
+        const absent = total - present;
+        const percent = ((present / total) * 100).toFixed(1);
+        absentCell.textContent = absent;
+        percentCell.textContent = `${percent}%`;
+        createPieChart(canvas, present, absent);
+      }
+    });
+
+    // Initial load
+    students.forEach(addRow);
+  </script>
+
+</body>
+</html>

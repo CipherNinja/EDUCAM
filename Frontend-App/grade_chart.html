@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Chart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            width: 100%;
+            max-width: 500px; /* Adjust as needed */
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="mx-auto max-w-2xl bg-white rounded-lg shadow-md p-8">
+        <h1 class="text-2xl font-semibold text-center text-gray-800 mb-6">Grade Chart</h1>
+        <div class="chart-container">
+            <canvas id="gradePieChart"></canvas>
+        </div>
+        <div class="mt-6 text-center">
+            <p id="studentName" class="text-xl font-semibold text-gray-700"></p>
+        </div>
+    </div>
+
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentName = urlParams.get('student');
+        const mathGrade = urlParams.get('math');
+        const scienceGrade = urlParams.get('science');
+        const englishGrade = urlParams.get('english');
+        const historyGrade = urlParams.get('history');
+        const studentId = urlParams.get('id'); // Get the student ID
+
+        // Display student name
+        document.getElementById('studentName').textContent = `Grade Chart for ${studentName}`;
+
+        // Function to convert letter grades to numerical values (for the chart)
+        function getGradeValue(grade) {
+            switch (grade) {
+                case 'A': return 95;
+                case 'B': return 85;
+                case 'C': return 75;
+                case 'D': return 65;
+                case 'F': return 55;
+                default:  return 0; // Or handle invalid grades as you prefer
+            }
+        }
+
+        // Prepare data for the pie chart
+        const grades = [
+            getGradeValue(mathGrade),
+            getGradeValue(scienceGrade),
+            getGradeValue(englishGrade),
+            getGradeValue(historyGrade)
+        ];
+
+        const gradeLabels = ['Math', 'Science', 'English', 'History'];
+        const backgroundColors = [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)'
+        ];
+        const borderColors = [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)'
+        ];
+
+        // Create the pie chart
+        const ctx = document.getElementById('gradePieChart').getContext('2d');
+        const gradePieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: gradeLabels,
+                datasets: [{
+                    label: 'Grades',
+                    data: grades,
+                    backgroundColor: backgroundColors,
+                    borderColor: borderColors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true, // Keep aspect ratio to prevent distortion
+                plugins: {
+                    legend: {
+                        position: 'top' // Or 'bottom', 'left', 'right', etc.
+                    },
+                },
+            }
+        });
+    </script>
+</body>
+</html>

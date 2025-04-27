@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Chart</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f7ff;
+      margin: 0;
+      padding: 40px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+
+    canvas {
+      max-width: 600px;
+      margin: 0 auto;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 30px;
+      text-decoration: none;
+      color: #3498db;
+      font-weight: bold;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .not-found {
+      font-size: 18px;
+      color: #e74c3c;
+      margin-top: 20px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <h2 id="chartTitle">Loading Chart...</h2>
+  <canvas id="marksChart" width="400" height="400"></canvas>
+
+  <p class="not-found" id="errorText" style="display: none;"></p>
+
+  <a class="back-link" href="report.html">&larr; Back to Report</a>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const studentName = urlParams.get("name");
+
+    const students = [
+      ["Aarav Singh", 92, 88, 85, 90, 95],
+      ["Neha Sharma", 78, 82, 80, 75, 85],
+      ["Rohan Patel", 89, 91, 87, 88, 90],
+      ["Simran Kaur", 95, 94, 93, 96, 98],
+      ["Rahul Verma", 72, 70, 68, 74, 76],
+      ["Anjali Mehta", 90, 89, 91, 88, 92],
+      ["Deepak Joshi", 81, 83, 79, 77, 80],
+      ["Isha Gupta", 97, 98, 96, 95, 99],
+      ["Manav Rao", 75, 70, 72, 73, 78],
+      ["Priya Nair", 88, 85, 87, 89, 91],
+    ];
+
+    const labels = ["Math", "Science", "English", "Social Studies", "Computer"];
+    const found = students.find(student => student[0] === studentName);
+
+    if (found) {
+      document.getElementById("chartTitle").innerText = `${studentName}'s Marks`;
+
+      const ctx = document.getElementById("marksChart").getContext("2d");
+
+      new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Marks',
+            data: found.slice(1),
+            backgroundColor: [
+              '#3498db',
+              '#1abc9c',
+              '#f39c12',
+              '#9b59b6',
+              '#e74c3c'
+            ],
+            borderColor: '#fff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: '#2c3e50'
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return `${context.label}: ${context.raw}`;
+                }
+              }
+            }
+          }
+        }
+      });
+    } else {
+      document.getElementById("marksChart").style.display = "none";
+      document.getElementById("chartTitle").style.display = "none";
+      document.getElementById("errorText").style.display = "block";
+      document.getElementById("errorText").innerText = "Student not found!";
+    }
+  </script>
+
+</body>
+</html>

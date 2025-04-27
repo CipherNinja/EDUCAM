@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Timetable Manager | Student ERP</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --light-text: #ecf0f1;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-color);
+            flex-wrap: wrap;
+        }
+        
+        .header h1 {
+            color: var(--primary-color);
+            margin: 0;
+        }
+        
+        .class-info {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-accent {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .timetable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .timetable th {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .timetable td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+            position: relative;
+        }
+        
+        .timetable tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .timetable tr:hover {
+            background-color: #e9e9e9;
+        }
+        
+        .period {
+            font-weight: bold;
+            color: var(--dark-text);
+        }
+        
+        .subject {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 2px 0;
+        }
+        
+        .teacher {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-top: 3px;
+        }
+        
+        .break {
+            background-color: var(--accent-color);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .time-col {
+            width: 10%;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .day-col {
+            width: 18%;
+        }
+        
+        .edit-input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            margin-bottom: 5px;
+        }
+        
+        .edit-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.1);
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            padding: 2px 5px;
+            font-size: 0.8em;
+            display: none;
+        }
+        
+        .timetable td:hover .edit-btn {
+            display: block;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-label {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .file-label:hover {
+            opacity: 0.9;
+        }
+        
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+        
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-content {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .class-info {
+                margin-top: 10px;
+            }
+            
+            .timetable {
+                font-size: 0.9em;
+            }
+            
+            .timetable th, 
+            .timetable td {
+                padding: 8px 5px;
+            }
+            
+            .edit-btn {
+                display: block !important;
+            }
+        }
+    </style>
+    <!-- Include SheetJS library for Excel processing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="loading" id="loading">
+        <div class="loading-content">
+            <h3>Processing Excel File...</h3>
+            <p>Please wait while we import your timetable</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Weekly Class Timetable Manager</h1>
+            <div class="class-info">
+                Class: <select id="class-selector">
+                    <option value="XII-A">XII-A</option>
+                    <option value="XII-B">XII-B</option>
+                    <option value="XI-A">XI-A</option>
+                    <option value="XI-B">XI-B</option>
+                </select>
+                | Academic Year: 2023-2024
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn btn-primary" id="edit-btn">Edit Timetable</button>
+            <button class="btn btn-secondary" id="save-btn" disabled>Save Changes</button>
+            <button class="btn btn-primary" id="download-btn">Download Timetable</button>
+            <label for="file-upload" class="file-label">Upload Excel Timetable</label>
+            <input type="file" id="file-upload" class="file-input" accept=".xlsx,.xls">
+            <a href="timetable_template.xlsx" download class="btn btn-secondary">Download Template</a>
+        </div>
+        
+        <table class="timetable" id="timetable">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Monday</th>
+                    <th>Tuesday</th>
+                    <th>Wednesday</th>
+                    <th>Thursday</th>
+                    <th>Friday</th>
+                    <th>Saturday</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Period 1 -->
+                <tr>
+                    <td class="time-col">8:00 - 8:45</td>
+                    <td data-day="monday" data-period="1">
+                        <div class="period">Period 1</div>
+                        <div class="subject">Mathematics</div>
+                        <div class="teacher">Mr. Sharma</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="tuesday" data-period="1">
+                        <div class="period">Period 1</div>
+                        <div class="subject">Physics</div>
+                        <div class="teacher">Ms. Patel</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="wednesday" data-period="1">
+                        <div class="period">Period 1</div>
+                        <div class="subject">Chemistry</div>
+                        <div class="teacher">Dr. Singh</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="thursday" data-period="1">
+                        <div class="period">Period 1</div>
+                        <div class="subject">English</div>
+                        <div class="teacher">Mrs. D'Souza</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="friday" data-period="1">
+                        <div class="period">Period 1</div>
+                        <div class="subject">Computer Science</div>
+                        <div class="teacher">Mr. Gupta</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="saturday" data-period="1">
+                        <div class="period">Period 1</div>
+                        <div class="subject">Physical Education</div>
+                        <div class="teacher">Mr. Kumar</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                </tr>
+                
+                <!-- Period 2 -->
+                <tr>
+                    <td class="time-col">8:45 - 9:30</td>
+                    <td data-day="monday" data-period="2">
+                        <div class="period">Period 2</div>
+                        <div class="subject">Physics</div>
+                        <div class="teacher">Ms. Patel</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="tuesday" data-period="2">
+                        <div class="period">Period 2</div>
+                        <div class="subject">Mathematics</div>
+                        <div class="teacher">Mr. Sharma</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="wednesday" data-period="2">
+                        <div class="period">Period 2</div>
+                        <div class="subject">English</div>
+                        <div class="teacher">Mrs. D'Souza</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="thursday" data-period="2">
+                        <div class="period">Period 2</div>
+                        <div class="subject">Chemistry</div>
+                        <div class="teacher">Dr. Singh</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="friday" data-period="2">
+                        <div class="period">Period 2</div>
+                        <div class="subject">Mathematics</div>
+                        <div class="teacher">Mr. Sharma</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="saturday" data-period="2">
+                        <div class="period">Period 2</div>
+                        <div class="subject">Computer Science</div>
+                        <div class="teacher">Mr. Gupta</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                </tr>
+                
+                <!-- Period 3 -->
+                <tr>
+                    <td class="time-col">9:30 - 10:15</td>
+                    <td data-day="monday" data-period="3">
+                        <div class="period">Period 3</div>
+                        <div class="subject">Chemistry</div>
+                        <div class="teacher">Dr. Singh</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="tuesday" data-period="3">
+                        <div class="period">Period 3</div>
+                        <div class="subject">English</div>
+                        <div class="teacher">Mrs. D'Souza</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="wednesday" data-period="3">
+                        <div class="period">Period 3</div>
+                        <div class="subject">Mathematics</div>
+                        <div class="teacher">Mr. Sharma</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="thursday" data-period="3">
+                        <div class="period">Period 3</div>
+                        <div class="subject">Physics</div>
+                        <div class="teacher">Ms. Patel</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="friday" data-period="3">
+                        <div class="period">Period 3</div>
+                        <div class="subject">Chemistry</div>
+                        <div class="teacher">Dr. Singh</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="saturday" data-period="3">
+                        <div class="period">Period 3</div>
+                        <div class="subject">Mathematics</div>
+                        <div class="teacher">Mr. Sharma</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                </tr>
+                
+                <!-- Short Break -->
+                <tr class="break">
+                    <td class="time-col">10:15 - 10:30</td>
+                    <td colspan="6">SHORT BREAK</td>
+                </tr>
+                
+                <!-- Period 4 -->
+                <tr>
+                    <td class="time-col">10:30 - 11:15</td>
+                    <td data-day="monday" data-period="4">
+                        <div class="period">Period 4</div>
+                        <div class="subject">English</div>
+                        <div class="teacher">Mrs. D'Souza</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="tuesday" data-period="4">
+                        <div class="period">Period 4</div>
+                        <div class="subject">Chemistry</div>
+                        <div class="teacher">Dr. Singh</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="wednesday" data-period="4">
+                        <div class="period">Period 4</div>
+                        <div class="subject">Physics</div>
+                        <div class="teacher">Ms. Patel</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="thursday" data-period="4">
+                        <div class="period">Period 4</div>
+                        <div class="subject">Mathematics</div>
+                        <div class="teacher">Mr. Sharma</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="friday" data-period="4">
+                        <div class="period">Period 4</div>
+                        <div class="subject">English</div>
+                        <div class="teacher">Mrs. D'Souza</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="saturday" data-period="4">
+                        <div class="period">Period 4</div>
+                        <div class="subject">Physics</div>
+                        <div class="teacher">Ms. Patel</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                </tr>
+                
+                <!-- Period 5 -->
+                <tr>
+                    <td class="time-col">11:15 - 12:00</td>
+                    <td data-day="monday" data-period="5">
+                        <div class="period">Period 5</div>
+                        <div class="subject">Computer Science</div>
+                        <div class="teacher">Mr. Gupta</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="tuesday" data-period="5">
+                        <div class="period">Period 5</div>
+                        <div class="subject">Computer Science</div>
+                        <div class="teacher">Mr. Gupta</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="wednesday" data-period="5">
+                        <div class="period">Period 5</div>
+                        <div class="subject">Library</div>
+                        <div class="teacher">Ms. Joshi</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="thursday" data-period="5">
+                        <div class="period">Period 5</div>
+                        <div class="subject">Computer Science</div>
+                        <div class="teacher">Mr. Gupta</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="friday" data-period="5">
+                        <div class="period">Period 5</div>
+                        <div class="subject">Physics</div>
+                        <div class="teacher">Ms. Patel</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="saturday" data-period="5">
+                        <div class="period">Period 5</div>
+                        <div class="subject">Chemistry</div>
+                        <div class="teacher">Dr. Singh</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                </tr>
+                
+                <!-- Lunch Break -->
+                <tr class="break">
+                    <td class="time-col">12:00 - 12:30</td>
+                    <td colspan="6">LUNCH BREAK</td>
+                </tr>
+                
+                <!-- Period 6 -->
+                <tr>
+                    <td class="time-col">12:30 - 1:15</td>
+                    <td data-day="monday" data-period="6">
+                        <div class="period">Period 6</div>
+                        <div class="subject">Physics Lab</div>
+                        <div class="teacher">Ms. Patel</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="tuesday" data-period="6">
+                        <div class="period">Period 6</div>
+                        <div class="subject">Chemistry Lab</div>
+                        <div class="teacher">Dr. Singh</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="wednesday" data-period="6">
+                        <div class="period">Period 6</div>
+                        <div class="subject">Computer Lab</div>
+                        <div class="teacher">Mr. Gupta</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="thursday" data-period="6">
+                        <div class="period">Period 6</div>
+                        <div class="subject">Physics Lab</div>
+                        <div class="teacher">Ms. Patel</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="friday" data-period="6">
+                        <div class="period">Period 6</div>
+                        <div class="subject">Chemistry Lab</div>
+                        <div class="teacher">Dr. Singh</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="saturday" data-period="6">
+                        <div class="period">Period 6</div>
+                        <div class="subject">Computer Lab</div>
+                        <div class="teacher">Mr. Gupta</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                </tr>
+                
+                <!-- Period 7 -->
+                <tr>
+                    <td class="time-col">1:15 - 2:00</td>
+                    <td data-day="monday" data-period="7">
+                        <div class="period">Period 7</div>
+                        <div class="subject">Chemistry Lab</div>
+                        <div class="teacher">Dr. Singh</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="tuesday" data-period="7">
+                        <div class="period">Period 7</div>
+                        <div class="subject">Physics Lab</div>
+                        <div class="teacher">Ms. Patel</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="wednesday" data-period="7">
+                        <div class="period">Period 7</div>
+                        <div class="subject">Computer Lab</div>
+                        <div class="teacher">Mr. Gupta</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="thursday" data-period="7">
+                        <div class="period">Period 7</div>
+                        <div class="subject">Chemistry Lab</div>
+                        <div class="teacher">Dr. Singh</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="friday" data-period="7">
+                        <div class="period">Period 7</div>
+                        <div class="subject">Physics Lab</div>
+                        <div class="teacher">Ms. Patel</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="saturday" data-period="7">
+                        <div class="period">Period 7</div>
+                        <div class="subject">Computer Lab</div>
+                        <div class="teacher">Mr. Gupta</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                </tr>
+                
+                <!-- Period 8 -->
+                <tr>
+                    <td class="time-col">2:00 - 2:45</td>
+                    <td data-day="monday" data-period="8">
+                        <div class="period">Period 8</div>
+                        <div class="subject">Mathematics</div>
+                        <div class="teacher">Mr. Sharma</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="tuesday" data-period="8">
+                        <div class="period">Period 8</div>
+                        <div class="subject">English</div>
+                        <div class="teacher">Mrs. D'Souza</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="wednesday" data-period="8">
+                        <div class="period">Period 8</div>
+                        <div class="subject">Physics</div>
+                        <div class="teacher">Ms. Patel</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="thursday" data-period="8">
+                        <div class="period">Period 8</div>
+                        <div class="subject">Chemistry</div>
+                        <div class="teacher">Dr. Singh</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="friday" data-period="8">
+                        <div class="period">Period 8</div>
+                        <div class="subject">Mathematics</div>
+                        <div class="teacher">Mr. Sharma</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                    <td data-day="saturday" data-period="8">
+                        <div class="period">Period 8</div>
+                        <div class="subject">English</div>
+                        <div class="teacher">Mrs. D'Souza</div>
+                        <button class="edit-btn">✏️</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="footer">
+            <p>© 2023 Student ERP System | Timetable last updated: <span id="last-updated">October 15, 2023</span></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const editBtn = document.getElementById('edit-btn');
+            const saveBtn = document.getElementById('save-btn');
+            const downloadBtn = document.getElementById('download-btn');
+            const fileUpload = document.getElementById('file-upload');
+            const timetable = document.getElementById('timetable');
+            const lastUpdated = document.getElementById('last-updated');
+            const loading = document.getElementById('loading');
+            
+            let isEditing = false;
+            let timetableData = {};
+            
+            // Initialize timetable data
+            function initTimetableData() {
+                const rows = timetable.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const timeCell = row.querySelector('.time-col');
+                    if (!timeCell) return;
+                    
+                    const time = timeCell.textContent.trim();
+                    timetableData[time] = {};
+                    
+                    const dayCells = row.querySelectorAll('[data-day]');
+                    dayCells.forEach(cell => {
+                        const day = cell.getAttribute('data-day');
+                        const period = cell.getAttribute('data-period');
+                        
+                        timetableData[time][day] = {
+                            period: period,
+                            subject: cell.querySelector('.subject')?.textContent || '',
+                            teacher: cell.querySelector('.teacher')?.textContent || ''
+                        };
+                    });
+                });
+            }
+            
+            // Toggle edit mode
+            editBtn.addEventListener('click', function() {
+                isEditing = !isEditing;
+                
+                if (isEditing) {
+                    editBtn.textContent = 'Cancel Editing';
+                    editBtn.classList.remove('btn-primary');
+                    editBtn.classList.add('btn-accent');
+                    saveBtn.disabled = false;
+                    
+                    // Show all edit buttons
+                    document.querySelectorAll('.edit-btn').forEach(btn => {
+                        btn.style.display = 'block';
+                    });
+                } else {
+                    editBtn.textContent = 'Edit Timetable';
+                    editBtn.classList.remove('btn-accent');
+                    editBtn.classList.add('btn-primary');
+                    saveBtn.disabled = true;
+                    
+                    // Hide edit buttons
+                    document.querySelectorAll('.edit-btn').forEach(btn => {
+                        if (window.innerWidth > 768) {
+                            btn.style.display = 'none';
+                        }
+                    });
+                    
+                    // Revert any unsaved changes
+                    initTimetableData();
+                }
+            });
+            
+            // Handle cell editing
+            timetable.addEventListener('click', function(e) {
+                if (!isEditing) return;
+                
+                const editBtn = e.target.closest('.edit-btn');
+                if (!editBtn) return;
+                
+                const cell = editBtn.closest('td');
+                const subjectElement = cell.querySelector('.subject');
+                const teacherElement = cell.querySelector('.teacher');
+                
+                const currentSubject = subjectElement?.textContent || '';
+                const currentTeacher = teacherElement?.textContent || '';
+                
+                // Create input fields
+                const subjectInput = document.createElement('input');
+                subjectInput.type = 'text';
+                subjectInput.className = 'edit-input';
+                subjectInput.value = currentSubject;
+                subjectInput.placeholder = 'Subject';
+                
+                const teacherInput = document.createElement('input');
+                teacherInput.type = 'text';
+                teacherInput.className = 'edit-input';
+                teacherInput.value = currentTeacher;
+                teacherInput.placeholder = 'Teacher';
+                
+                // Replace content with inputs
+                cell.innerHTML = '';
+                cell.appendChild(document.createElement('div')).className = 'period';
+                cell.lastChild.textContent = `Period ${cell.getAttribute('data-period')}`;
+                cell.appendChild(subjectInput);
+                cell.appendChild(teacherInput);
+                
+                // Add save button
+                const saveBtn = document.createElement('button');
+                saveBtn.className = 'btn btn-secondary';
+                saveBtn.textContent = 'Save';
+                saveBtn.style.marginTop = '5px';
+                
+                saveBtn.addEventListener('click', function() {
+                    const newSubject = subjectInput.value.trim();
+                    const newTeacher = teacherInput.value.trim();
+                    
+                    if (newSubject && newTeacher) {
+                        // Update cell
+                        cell.innerHTML = `
+                            <div class="period">Period ${cell.getAttribute('data-period')}</div>
+                            <div class="subject">${newSubject}</div>
+                            <div class="teacher">${newTeacher}</div>
+                            <button class="edit-btn">✏️</button>
+                        `;
+                        
+                        // Update timetable data
+                        const time = cell.closest('tr').querySelector('.time-col').textContent.trim();
+                        const day = cell.getAttribute('data-day');
+                        
+                        timetableData[time][day] = {
+                            period: cell.getAttribute('data-period'),
+                            subject: newSubject,
+                            teacher: newTeacher
+                        };
+                    }
+                });
+                
+                cell.appendChild(saveBtn);
+            });
+            
+            // Save changes
+            saveBtn.addEventListener('click', function() {
+                // In a real application, you would send this data to the server
+                console.log('Saving timetable:', timetableData);
+                
+                // Update last modified date
+                const now = new Date();
+                lastUpdated.textContent = now.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                
+                // Exit edit mode
+                isEditing = false;
+                editBtn.textContent = 'Edit Timetable';
+                editBtn.classList.remove('btn-accent');
+                editBtn.classList.add('btn-primary');
+                saveBtn.disabled = true;
+                
+                // Hide edit buttons
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    if (window.innerWidth > 768) {
+                        btn.style.display = 'none';
+                    }
+                });
+                
+                alert('Timetable saved successfully!');
+            });
+            
+            // Download timetable
+            downloadBtn.addEventListener('click', function() {
+                const dataStr = JSON.stringify(timetableData, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                
+                const exportFileDefaultName = `timetable_${document.getElementById('class-selector').value}.json`;
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+            });
+            
+            // Upload timetable from Excel
+            fileUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                loading.style.display = 'flex';
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        
+                        // Get the first worksheet
+                        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                        
+                        // Convert to JSON
+                        const excelData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                        
+                        // Process the Excel data
+                        processExcelData(excelData);
+                        
+                        // Update last modified date
+                        const now = new Date();
+                        lastUpdated.textContent = now.toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        });
+                        
+                        loading.style.display = 'none';
+                        alert('Timetable imported successfully from Excel!');
+                    } catch (error) {
+                        loading.style.display = 'none';
+                        alert('Error importing timetable: ' + error.message);
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            });
+            
+            // Process Excel data and update the timetable
+            function processExcelData(excelData) {
+                // Clear existing timetable data
+                timetableData = {};
+                
+                // The first row contains headers (days)
+                const headers = excelData[0];
+                
+                // Process each row (time slots)
+                for (let i = 1; i < excelData.length; i++) {
+                    const row = excelData[i];
+                    if (!row || row.length === 0) continue;
+                    
+                    const time = row[0]; // First column is time
+                    if (!time) continue;
+                    
+                    timetableData[time] = {};
+                    
+                    // Process each day's data
+                    for (let j = 1; j < headers.length; j++) {
+                        const day = headers[j].toLowerCase();
+                        if (!day) continue;
+                        
+                        const cellValue = row[j];
+                        if (!cellValue) continue;
+                        
+                        // Split subject and teacher (assuming format "Subject (Teacher)")
+                        let subject, teacher;
+                        const teacherStart = cellValue.lastIndexOf('(');
+                        
+                        if (teacherStart !== -1) {
+                            subject = cellValue.substring(0, teacherStart).trim();
+                            teacher = cellValue.substring(teacherStart + 1, cellValue.length - 1).trim();
+                        } else {
+                            subject = cellValue;
+                            teacher = '';
+                        }
+                        
+                        // Find the period for this time slot
+                        let period = 1;
+                        const timeMatch = time.match(/(\d+):/);
+                        if (timeMatch) {
+                            const hour = parseInt(timeMatch[1]);
+                            // Simple mapping of time to period (can be customized)
+                            period = hour - 7; // Assuming first period starts at 8:00
+                        }
+                        
+                        // Update the timetable cell
+                        const cell = document.querySelector(`td[data-day="${day}"][data-period="${period}"]`);
+                        if (cell) {
+                            cell.innerHTML = `
+                                <div class="period">Period ${period}</div>
+                                <div class="subject">${subject}</div>
+                                <div class="teacher">${teacher}</div>
+                                <button class="edit-btn">✏️</button>
+                            `;
+                        }
+                        
+                        // Update timetable data
+                        timetableData[time][day] = {
+                            period: period,
+                            subject: subject,
+                            teacher: teacher
+                        };
+                    }
+                }
+            }
+            
+            // Initialize
+            initTimetableData();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College ERP - Performance</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>College ERP</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="attendance.html"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+            <li class="active"><a href="performance.html"><i class="fas fa-chart-pie"></i> Performance</a></li>
+            <li><a href="feedback.html"><i class="fas fa-comment-alt"></i> Feedback</a></li>
+            <li><a href="academic.html"><i class="fas fa-book"></i> Academic</a></li>
+            <li><a href="timetable.html"><i class="fas fa-calendar-alt"></i> Timetable</a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Student Performance Analytics</h1>
+            <div class="user-profile">
+                <div class="avatar">MP</div>
+                <span>Misa Pragya (Faculty)</span>
+            </div>
+        </div>
+
+        <div class="performance-filters">
+            <div class="filter-group">
+                <label for="performance-class">Class</label>
+                <select id="performance-class">
+                    <option value="all">All Classes</option>
+                    <option value="cs101">CS 101</option>
+                    <option value="cs201" selected>CS 201</option>
+                    <option value="cs301">CS 301</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="performance-metric">Metric</label>
+                <select id="performance-metric">
+                    <option value="attendance">Attendance</option>
+                    <option value="grades" selected>Grades</option>
+                    <option value="participation">Participation</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="performance-period">Period</label>
+                <select id="performance-period">
+                    <option value="week">This Week</option>
+                    <option value="month" selected>This Month</option>
+                    <option value="semester">This Semester</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="charts-container">
+            <div class="chart-card">
+                <h3>Class Performance Distribution</h3>
+                <div class="chart-placeholder"></div>
+            </div>
+            <div class="chart-card">
+                <h3>Top/Bottom Performers</h3>
+                <div class="chart-placeholder"></div>
+            </div>
+        </div>
+        
+        <div class="chart-card" style="margin-top: 20px;">
+            <h3>Performance Trend</h3>
+            <div class="chart-placeholder"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+</body>
+</html>

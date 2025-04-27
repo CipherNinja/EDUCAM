@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Academic Report</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f4f7fb;
+      color: #333;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #2c3e50;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      text-decoration: none;
+      color: #2980b9;
+      font-weight: bold;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    th, td {
+      padding: 14px;
+      border-bottom: 1px solid #eee;
+      text-align: center;
+    }
+
+    th {
+      background: #3498db;
+      color: white;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: #f0f9ff;
+    }
+
+    .editable {
+      cursor: pointer;
+      background-color: #fff9c4;
+      transition: background-color 0.3s;
+    }
+
+    .editable:focus {
+      outline: 2px solid #3498db;
+      background-color: #fffde7;
+    }
+
+    .add-student-form {
+      margin-top: 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      animation: fadeIn 0.8s ease;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .add-student-form input {
+      padding: 10px;
+      margin: 5px;
+      width: calc(100% / 6 - 12px);
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .add-student-form button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      background-color: #2ecc71;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+
+    .add-student-form button:hover {
+      background-color: #27ae60;
+    }
+
+    .chart-btn {
+      padding: 8px 12px;
+      background: #e67e22;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s ease;
+    }
+
+    .chart-btn:hover {
+      background: #d35400;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      .add-student-form input {
+        width: 100%;
+        margin: 5px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="dashboard.html" class="back-link">&larr; Back to Dashboard</a>
+  <h2>Editable Academic Report</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Student Name</th>
+        <th>Math</th>
+        <th>Science</th>
+        <th>English</th>
+        <th>Social Studies</th>
+        <th>Computer</th>
+        <th>View Chart</th>
+      </tr>
+    </thead>
+    <tbody id="reportTableBody">
+      <!-- Students injected by JS -->
+    </tbody>
+  </table>
+
+  <div class="add-student-form">
+    <h3>Add New Student</h3>
+    <input type="text" placeholder="Name" id="newName">
+    <input type="number" placeholder="Math" id="newMath">
+    <input type="number" placeholder="Science" id="newScience">
+    <input type="number" placeholder="English" id="newEnglish">
+    <input type="number" placeholder="Social" id="newSocial">
+    <input type="number" placeholder="Computer" id="newComputer">
+    <br>
+    <button onclick="addStudent()">Add Student</button>
+  </div>
+
+  <script>
+    const students = [
+      ["Aarav Singh", 92, 88, 85, 90, 95],
+      ["Neha Sharma", 78, 82, 80, 75, 85],
+      ["Rohan Patel", 89, 91, 87, 88, 90],
+      ["Simran Kaur", 95, 94, 93, 96, 98],
+      ["Rahul Verma", 72, 70, 68, 74, 76],
+      ["Anjali Mehta", 90, 89, 91, 88, 92],
+      ["Deepak Joshi", 81, 83, 79, 77, 80],
+      ["Isha Gupta", 97, 98, 96, 95, 99],
+      ["Manav Rao", 75, 70, 72, 73, 78],
+      ["Priya Nair", 88, 85, 87, 89, 91],
+    ];
+
+    const tbody = document.getElementById('reportTableBody');
+
+    function renderTable() {
+      tbody.innerHTML = "";
+      students.forEach((student, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td class="editable" contenteditable="true">${student[0]}</td>
+          ${student.slice(1).map(mark => `<td class="editable" contenteditable="true">${mark}</td>`).join("")}
+          <td><button class="chart-btn" onclick="viewChart('${student[0]}')">View Chart</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function addStudent() {
+      const name = document.getElementById("newName").value;
+      const math = +document.getElementById("newMath").value;
+      const science = +document.getElementById("newScience").value;
+      const english = +document.getElementById("newEnglish").value;
+      const social = +document.getElementById("newSocial").value;
+      const computer = +document.getElementById("newComputer").value;
+
+      if (name && !isNaN(math) && !isNaN(science) && !isNaN(english) && !isNaN(social) && !isNaN(computer)) {
+        students.push([name, math, science, english, social, computer]);
+        renderTable();
+        document.querySelectorAll('.add-student-form input').forEach(input => input.value = '');
+      }
+    }
+
+    function viewChart(studentName) {
+      const encodedName = encodeURIComponent(studentName);
+      window.location.href = `chart.html?name=${encodedName}`;
+    }
+
+    // Input validation for numbers
+    tbody.addEventListener("input", (e) => {
+      const el = e.target;
+      if (el.contentEditable === "true" && el.cellIndex !== 0) {
+        el.textContent = el.textContent.replace(/[^0-9]/g, "");
+      }
+    });
+
+    renderTable();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+    <script>
+        // Function to generate a unique ID for each student
+        function generateStudentId(name) {
+            // Simple hashing function (you can use a more robust one if needed)
+            let hash = 0;
+            if (name.length === 0) return hash;
+            for (let i = 0; i < name.length; i++) {
+                let char = name.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            return hash.toString(16); // Convert to hexadecimal
+        }
+    </script>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="mx-auto max-w-2xl bg-white rounded-lg shadow-md p-8">
+        <h1 class="text-2xl font-semibold text-center text-gray-800 mb-6">Student  Activeness Report</h1>
+        <div class="overflow-x-auto">
+            <table class="min-w-full leading-normal shadow-md rounded-lg overflow-hidden">
+                <thead class="bg-gray-200 text-gray-700">
+                    <tr>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider">
+                            Student Name
+                        </th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider">
+                            Math
+                        </th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider">
+                            Science
+                        </th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider">
+                            English
+                        </th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider">
+                            History
+                        </th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider">
+                            Grade Chart
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white">
+                    <tr>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <div class="flex items-center">
+                                <div class="ml-3">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        John Doe
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                A
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                B
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                A
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                C
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <a href="grade_chart.html?student=John Doe&math=A&science=B&english=A&history=C" class="text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                                View Chart
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <div class="flex items-center">
+                                <div class="ml-3">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        Jane Smith
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                B
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                C
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                B
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                A
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <a href="grade_chart.html?student=Jane Smith&math=B&science=C&english=B&history=A" class="text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                                View Chart
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <div class="flex items-center">
+                                <div class="ml-3">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        Mike Johnson
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                C
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                B
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                C
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                B
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <a href="grade_chart.html?student=Mike Johnson&math=C&science=B&english=C&history=B" class="text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                                View Chart
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <div class="flex items-center">
+                                <div class="ml-3">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        Alice Brown
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                A
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                A
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                A
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                A
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <a href="grade_chart.html?student=Alice Brown&math=A&science=A&english=A&history=A" class="text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                                View Chart
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <div class="flex items-center">
+                                <div class="ml-3">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        Bob Wilson
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                B
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                B
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                C
+                            </p>
+                         </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                B
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <a href="grade_chart.html?student=Bob Wilson&math=B&science=B&english=C&history=B" class="text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                                View Chart
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <div class="flex items-center">
+                                <div class="ml-3">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        Charlie Davis
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                C
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                C
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                B
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                C
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <a href="grade_chart.html?student=Charlie Davis&math=C&science=C&english=B&history=C" class="text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                                View Chart
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <div class="flex items-center">
+                                <div class="ml-3">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        Diana Evans
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                A
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                A
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                A
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                B
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <a href="grade_chart.html?student=Diana Evans&math=A&science=A&english=A&history=B" class="text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                                View Chart
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <div class="flex items-center">
+                                <div class="ml-3">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        Ethan Green
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                B
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                B
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                B
+                            </p>
+                         </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                C
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <a href="grade_chart.html?student=Ethan Green&math=B&science=B&english=B&history=C" class="text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                                View Chart
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <div class="flex items-center">
+                                <div class="ml-3">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        Fiona White
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                C
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                C
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                C
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                A
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <a href="grade_chart.html?student=Fiona White&math=C&science=C&english=C&history=A" class="text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                                View Chart
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <div class="flex items-center">
+                                <div class="ml-3">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        George Black
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                A
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                B
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                A
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                A
+                            </p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                            <a href="grade_chart.html?student=George Black&math=A&science=B&english=A&history=A" class="text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                                View Chart
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+    // This script is here to create the links.
+    const tableRows = document.querySelectorAll("tbody tr");
+    tableRows.forEach(row => {
+        const studentName = row.querySelector("td:nth-child(1)").textContent.trim();
+        const mathGrade = row.querySelector("td:nth-child(2)").textContent.trim();
+        const scienceGrade = row.querySelector("td:nth-child(3)").textContent.trim();
+        const englishGrade = row.querySelector("td:nth-child(4)").textContent.trim();
+        const historyGrade = row.querySelector("td:nth-child(5)").textContent.trim();
+
+        const studentId = generateStudentId(studentName); // Generate a unique ID
+        const link = row.querySelector("td:nth-child(6) a");
+        link.href = `grade_chart.html?student=${encodeURIComponent(studentName)}&math=${mathGrade}&science=${scienceGrade}&english=${englishGrade}&history=${historyGrade}&id=${studentId}`;
+    });
+    </script>
+</body>
+</html>
